@@ -1,10 +1,8 @@
-import com.gradle.shadow.tasks.ShadowJar
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("org.polyfrost.loom") version "1.6.polyfrost.3" apply false
-    id("com.gradleup.shadow") version "8.3.0" apply false
     id("dev.architectury.architectury-pack200") version "0.1.3"
 }
 
