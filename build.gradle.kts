@@ -4,7 +4,7 @@ import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("org.polyfrost.loom") version "1.6.polyfrost.3" apply false
-    id("com.gradleup.shadow") version "8.1.1" apply false
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     id("dev.architectury.architectury-pack200") version "0.1.3"
 }
 
