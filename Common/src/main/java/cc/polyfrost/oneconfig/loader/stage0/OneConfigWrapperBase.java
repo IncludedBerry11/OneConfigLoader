@@ -39,53 +39,6 @@ public abstract class OneConfigWrapperBase {
     public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
     public OneConfigWrapperBase() {
-        try {
-            if (shouldSSLStore()) {
-                addSSLStore();
-            }
-
-            final LoaderInfo loaderInfo = provideLoaderInfo();
-            // TODO: make this not spam the log everytime the wrapper is called from a mod
-            System.out.println("OneConfig has detected the version " + loaderInfo.mcVersion + ". If this is false, report this at https://inv.wtf/polyfrost");
-
-            File oneconfigFile = provideFile(loaderInfo);
-
-            if (!isInitialized(oneconfigFile) && shouldUpdate()) {
-                JsonElement json = getRequest("https://api.polyfrost.org/oneconfig/" + loaderInfo.mcVersion + "-" + loaderInfo.modLoader);
-                if (json != null && json.isJsonObject()) {
-                    JsonObject jsonObject = json.getAsJsonObject();
-                    JsonInfo jsonInfo = provideJsonInfo(jsonObject, loaderInfo);
-                    if (jsonInfo.success) {
-                        if (!oneconfigFile.exists() || !jsonInfo.checksum.equals(getChecksum(oneconfigFile))) {
-                            System.out.println("Updating OneConfig " + loaderInfo.stageLoading + "...");
-                            File newLoaderFile = new File(oneconfigFile.getParentFile(), oneconfigFile.getName().substring(0, oneconfigFile.getName().lastIndexOf(".")) + "-NEW.jar");
-
-                            downloadFile(jsonInfo.downloadUrl, newLoaderFile);
-
-                            if (newLoaderFile.exists() && jsonInfo.checksum.equals(getChecksum(newLoaderFile))) {
-                                try {
-                                    Files.move(newLoaderFile.toPath(), oneconfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                    System.out.println("Updated OneConfig " + loaderInfo.stageLoading + "!");
-                                } catch (IOException ignored) {
-                                }
-                            } else {
-                                if (newLoaderFile.exists()) newLoaderFile.delete();
-                                System.out.println("Failed to update OneConfig " + loaderInfo.stageLoading + ", trying to continue...");
-                            }
-                        }
-                    }
-                }
-
-                if (!oneconfigFile.exists()) showErrorScreen();
-                addToClasspath(oneconfigFile);
-            }
-            if (!getNextInstance()) {
-                showErrorScreen();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            showErrorScreen();
-        }
     }
 
     protected static class LoaderInfo {
@@ -149,30 +102,6 @@ public abstract class OneConfigWrapperBase {
     }
 
     protected static JsonElement getRequest(String site) {
-        try {
-            URL url = new URL(site);
-            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-            con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OneConfigWrapper");
-            con.setRequestMethod("GET");
-            con.setConnectTimeout(15000);
-            con.setReadTimeout(15000);
-            int status = con.getResponseCode();
-            if (status != 200) {
-                System.out.println("API request failed, status code " + status);
-                return null;
-            }
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            in.close();
-            JsonParser parser = new JsonParser();
-            return parser.parse(content.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return null;
     }
 
