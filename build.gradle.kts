@@ -4,7 +4,7 @@ import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("org.polyfrost.loom") version "1.6.polyfrost.3" apply false
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.gradleup.shadow") version "8.1.1" apply false
     id("dev.architectury.architectury-pack200") version "0.1.3"
 }
 
@@ -50,7 +50,7 @@ allprojects {
 subprojects {
     apply(plugin = "java")
     apply(plugin = "idea")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "com.gradleup.shadow")
     val common = project.name.contains("common")
     val loader = project.name.contains("loader")
     if (!common) {
